@@ -1,0 +1,6 @@
+services:
+    dovc.route_transformer:
+        class: DovcBundle\EventSubscriber\RouteTransformerSubscriber
+        arguments: [ '@translator', '@request_stack', '@router' ]
+        tags:
+            - { name: kernel.event_subscriber }
