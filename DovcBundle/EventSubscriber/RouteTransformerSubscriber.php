@@ -6,9 +6,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 class RouteTransformerSubscriber implements EventSubscriberInterface
 {
@@ -47,11 +48,12 @@ class RouteTransformerSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
 
         $path = '';
-        $messages = $this->translator->getCatalogue($request->attributes->get('_locale'))->all('routing');
+        $messagesRouting = $this->translator->getCatalogue($request->attributes->get('_locale'))
+                                            ->all('routing');
 
         $uriArray = explode('/', $request->getPathInfo());
         foreach ($uriArray as $key => $item) {
-            $tmp = array_search($item, $messages);
+            $tmp = array_search($item, $messagesRouting);
             $path .= (($tmp === false) ? $item : $tmp);
 
             $path .= (count($uriArray) - 1) == $key ? '' : '/';
@@ -63,10 +65,13 @@ class RouteTransformerSubscriber implements EventSubscriberInterface
             $request->attributes->set('_controller', $routeInformation['_controller']);
             $request->attributes->set('_route', $routeInformation['_route']);
         }
-        catch (\Exception $e)
+        catch (ResourceNotFoundException $e)
         {
-            dump($e->getMessage());
-            exit;
+            return;
+        }
+        catch (MethodNotAllowedException $e)
+        {
+            return;
         }
     }
 }

@@ -1,9 +1,0 @@
-dovc_homepage:
-    path:     /symfony_is_great
-    defaults: { _controller: DovcBundle:Default:index }
-dovc_test:
-    path: /route
-    defaults: { _controller: DovcBundle:Default:indextest }
-dovc_test2:
-    path: /symfony_is_great_2
-    defaults: { _controller: DovcBundle:Default:indextest2 }
