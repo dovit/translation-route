@@ -4,7 +4,6 @@
   "description": "",
   "keywords": ["routing"],
   "license": "MIT",
-  ],
   "autoload":{
     "psr-4":{
       "DovcBundle\\": ""
